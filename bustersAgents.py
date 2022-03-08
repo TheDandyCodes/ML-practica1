@@ -108,6 +108,150 @@ class BustersAgent(object):
         "By default, a BustersAgent just stops.  This should be overridden."
         return Directions.STOP
 
+    def printLineData(self, gameState):
+        import numpy as np
+        relation = "\n@relation all-data-pacman"
+        atribute2 = "\n@attribute pacmanXpos NUMERIC"
+        atribute3 = "\n@attribute pacmanYpos NUMERIC"
+        atribute1 = "\n@attribute pacmanDirec {West, East, North, South, Stop}"
+        atribute4 = "\n@attribute LivingGhost1 {False, True}"
+        atribute5 = "\n@attribute LivingGhost2 {False, True}"
+        atribute6 = "\n@attribute LivingGhost3 {False, True}"
+        atribute7 = "\n@attribute LivingGhost4 {False, True}"
+        atribute9 = "\n@attribute ghost1XPos NUMERIC"
+        atribute10 = "\n@attribute ghost1YPos NUMERIC"
+        atribute11 = "\n@attribute ghost2XPos NUMERIC"
+        atribute12 = "\n@attribute ghost2YPos NUMERIC"
+        atribute13 = "\n@attribute ghost3XPos NUMERIC"
+        atribute14 = "\n@attribute ghost3YPos NUMERIC"
+        atribute15 = "\n@attribute ghost4XPos NUMERIC"
+        atribute16 = "\n@attribute ghost4YPos NUMERIC"
+        atribute17 = "\n@attribute ghost1Dist NUMERIC"
+        atribute18 = "\n@attribute ghost2Dist NUMERIC"
+        atribute19 = "\n@attribute ghost3Dist NUMERIC"
+        atribute20 = "\n@attribute ghost4Dist NUMERIC"
+        clase = "\n@attribute action {West, East, North, South}"
+        instance = [relation, atribute1, atribute2, atribute3, atribute4, atribute5, atribute6, atribute7, atribute9, atribute10, atribute11, atribute12, atribute13, atribute14, atribute15, atribute16, atribute17, atribute18, atribute19, atribute20, clase]
+
+        if not os.path.isfile("weka-pacman/all-data-pacman.arff"):
+            with open('weka-pacman/all-data-pacman.arff', 'w') as file:
+                for i in instance:
+                    file.write(i)
+                file.write("\n@data")
+                file.write("\n")
+
+        new_line = []
+        pacmanXPosition = gameState.getPacmanPosition()[0]
+        pacmanYPosition = gameState.getPacmanPosition()[1]
+        pacmanDirection = gameState.data.agentStates[0].getDirection()
+        livingGhosts = gameState.getLivingGhosts()[1:]
+        new_info = [pacmanDirection, pacmanXPosition, pacmanYPosition]+livingGhosts
+        ghostPositions = gameState.getGhostPositions()
+        ghostDistances = gameState.data.ghostDistances[:] #Copy the list, there'll be changes, so change the assigment
+        
+        for i in range(len(ghostDistances)):
+            if ghostDistances[i] == None: ghostDistances[i] = 0
+
+        takenAction = BustersAgent.getAction(self, gameState)
+
+        for x in ghostPositions:
+            for i in x:
+                new_info.append(i)  
+        
+        new_info = new_info+ghostDistances
+        new_info.append(takenAction)
+        new_line.append(new_info)
+
+        with open('weka-pacman/all-data-pacman.arff','a') as file:
+            np.savetxt(file, new_line, delimiter=',', fmt='%s')
+        
+        print(new_info)
+
+    def printFilterData1(self, gameState):
+        import numpy as np
+        relation = "\n@relation filter-data-pacman-manual1"
+        atribute2 = "\n@attribute pacmanXpos NUMERIC"
+        atribute3 = "\n@attribute pacmanYpos NUMERIC"
+        atribute1 = "\n@attribute pacmanDirec {West, East, North, South, Stop}"
+        atribute4 = "\n@attribute ghost1XPos NUMERIC"
+        atribute5 = "\n@attribute ghost1YPos NUMERIC"
+        atribute6 = "\n@attribute ghost2XPos NUMERIC"
+        atribute7 = "\n@attribute ghost2YPos NUMERIC"
+        atribute8 = "\n@attribute ghost3XPos NUMERIC"
+        atribute9 = "\n@attribute ghost3YPos NUMERIC"
+        atribute10 = "\n@attribute ghost4XPos NUMERIC"
+        atribute11 = "\n@attribute ghost4YPos NUMERIC"
+        clase = "\n@attribute action {West, East, North, South}"
+        instance = [relation, atribute1, atribute2, atribute3, atribute4, atribute5, atribute6, atribute7, atribute8, atribute9, atribute10, atribute11, clase]
+
+        if not os.path.isfile("weka-pacman/filter-data-pacman-manual1.arff"):
+            with open('weka-pacman/filter-data-pacman-manual1.arff', 'w') as file:
+                for i in instance:
+                    file.write(i)
+                file.write("\n@data")
+                file.write("\n")
+
+        new_line = []
+        pacmanXPosition = gameState.getPacmanPosition()[0]
+        pacmanYPosition = gameState.getPacmanPosition()[1]
+        pacmanDirection = gameState.data.agentStates[0].getDirection()
+        new_info = [pacmanDirection, pacmanXPosition, pacmanYPosition]
+        ghostPositions = gameState.getGhostPositions()
+
+        takenAction = BustersAgent.getAction(self, gameState)
+
+        for x in ghostPositions:
+            for i in x:
+                new_info.append(i)  
+        
+        new_info.append(takenAction)
+        new_line.append(new_info)
+
+        with open('weka-pacman/filter-data-pacman-manual1.arff','a') as file:
+            np.savetxt(file, new_line, delimiter=',', fmt='%s')
+        
+        print("filter 1:", new_info)
+
+    def printFilterData2(self, gameState):
+        import numpy as np
+        relation = "\n@relation filter-data-pacman-manual2"
+        atribute1 = "\n@attribute LivingGhost1 {False, True}"
+        atribute2 = "\n@attribute LivingGhost2 {False, True}"
+        atribute3 = "\n@attribute LivingGhost3 {False, True}"
+        atribute4 = "\n@attribute LivingGhost4 {False, True}"
+        atribute5 = "\n@attribute ghost1Dist NUMERIC"
+        atribute6 = "\n@attribute ghost2Dist NUMERIC"
+        atribute7 = "\n@attribute ghost3Dist NUMERIC"
+        atribute8 = "\n@attribute ghost4Dist NUMERIC"
+        clase = "\n@attribute action {West, East, North, South}"
+        instance = [relation, atribute1, atribute2, atribute3, atribute4, atribute5, atribute6, atribute7, atribute8, clase]
+
+        if not os.path.isfile("weka-pacman/filter-data-pacman-manual2.arff"):
+            with open('weka-pacman/filter-data-pacman-manual2.arff', 'w') as file:
+                for i in instance:
+                    file.write(i)
+                file.write("\n@data")
+                file.write("\n")
+
+        new_line = []
+        livingGhosts = gameState.getLivingGhosts()[1:]
+        new_info = livingGhosts[:]
+        ghostDistances = gameState.data.ghostDistances[:] #Copy the list, there'll be changes, so change the assigment
+        
+        for i in range(len(ghostDistances)):
+            if ghostDistances[i] == None: ghostDistances[i] = 0
+
+        takenAction = BustersAgent.getAction(self, gameState)
+        
+        new_info = new_info+ghostDistances
+        new_info.append(takenAction)
+        new_line.append(new_info)
+
+        with open('weka-pacman/filter-data-pacman-manual2.arff','a') as file:
+            np.savetxt(file, new_line, delimiter=',', fmt='%s')
+        
+        print("filter 2: ", new_info)
+
 class BustersKeyboardAgent(BustersAgent, KeyboardAgent):
     "An agent controlled by the keyboard that displays beliefs about ghost positions."
 
@@ -395,148 +539,3 @@ class BasicAgentAA(BustersAgent): #############################INTERESA#########
         
 
         return move
-
-
-    def printLineData(self, gameState):
-        import numpy as np
-        relation = "\n@relation all-data-pacman"
-        atribute2 = "\n@attribute pacmanXpos NUMERIC"
-        atribute3 = "\n@attribute pacmanYpos NUMERIC"
-        atribute1 = "\n@attribute pacmanDirec {West, East, North, South, Stop}"
-        atribute4 = "\n@attribute LivingGhost1 {False, True}"
-        atribute5 = "\n@attribute LivingGhost2 {False, True}"
-        atribute6 = "\n@attribute LivingGhost3 {False, True}"
-        atribute7 = "\n@attribute LivingGhost4 {False, True}"
-        atribute9 = "\n@attribute ghost1XPos NUMERIC"
-        atribute10 = "\n@attribute ghost1YPos NUMERIC"
-        atribute11 = "\n@attribute ghost2XPos NUMERIC"
-        atribute12 = "\n@attribute ghost2YPos NUMERIC"
-        atribute13 = "\n@attribute ghost3XPos NUMERIC"
-        atribute14 = "\n@attribute ghost3YPos NUMERIC"
-        atribute15 = "\n@attribute ghost4XPos NUMERIC"
-        atribute16 = "\n@attribute ghost4YPos NUMERIC"
-        atribute17 = "\n@attribute ghost1Dist NUMERIC"
-        atribute18 = "\n@attribute ghost2Dist NUMERIC"
-        atribute19 = "\n@attribute ghost3Dist NUMERIC"
-        atribute20 = "\n@attribute ghost4Dist NUMERIC"
-        clase = "\n@attribute action {West, East, North, South}"
-        instance = [relation, atribute1, atribute2, atribute3, atribute4, atribute5, atribute6, atribute7, atribute9, atribute10, atribute11, atribute12, atribute13, atribute14, atribute15, atribute16, atribute17, atribute18, atribute19, atribute20, clase]
-
-        if not os.path.isfile("weka-pacman/all-data-pacman.arff"):
-            with open('weka-pacman/all-data-pacman.arff', 'w') as file:
-                for i in instance:
-                    file.write(i)
-                file.write("\n@data")
-                file.write("\n")
-
-        new_line = []
-        pacmanXPosition = gameState.getPacmanPosition()[0]
-        pacmanYPosition = gameState.getPacmanPosition()[1]
-        pacmanDirection = gameState.data.agentStates[0].getDirection()
-        livingGhosts = gameState.getLivingGhosts()[1:]
-        new_info = [pacmanDirection, pacmanXPosition, pacmanYPosition]+livingGhosts
-        ghostPositions = gameState.getGhostPositions()
-        ghostDistances = gameState.data.ghostDistances[:] #Copy the list, there'll be changes, so change the assigment
-        
-        for i in range(len(ghostDistances)):
-            if ghostDistances[i] == None: ghostDistances[i] = 0
-
-        takenAction = BustersAgent.getAction(self, gameState)
-
-        for x in ghostPositions:
-            for i in x:
-                new_info.append(i)  
-        
-        new_info = new_info+ghostDistances
-        new_info.append(takenAction)
-        new_line.append(new_info)
-
-        with open('weka-pacman/all-data-pacman.arff','a') as file:
-            np.savetxt(file, new_line, delimiter=',', fmt='%s')
-        
-        print(new_info)
-
-    def printFilterData1(self, gameState):
-        import numpy as np
-        relation = "\n@relation filter-data-pacman-manual1"
-        atribute2 = "\n@attribute pacmanXpos NUMERIC"
-        atribute3 = "\n@attribute pacmanYpos NUMERIC"
-        atribute1 = "\n@attribute pacmanDirec {West, East, North, South, Stop}"
-        atribute4 = "\n@attribute ghost1XPos NUMERIC"
-        atribute5 = "\n@attribute ghost1YPos NUMERIC"
-        atribute6 = "\n@attribute ghost2XPos NUMERIC"
-        atribute7 = "\n@attribute ghost2YPos NUMERIC"
-        atribute8 = "\n@attribute ghost3XPos NUMERIC"
-        atribute9 = "\n@attribute ghost3YPos NUMERIC"
-        atribute10 = "\n@attribute ghost4XPos NUMERIC"
-        atribute11 = "\n@attribute ghost4YPos NUMERIC"
-        clase = "\n@attribute action {West, East, North, South}"
-        instance = [relation, atribute1, atribute2, atribute3, atribute4, atribute5, atribute6, atribute7, atribute8, atribute9, atribute10, atribute11, clase]
-
-        if not os.path.isfile("weka-pacman/filter-data-pacman-manual1.arff"):
-            with open('weka-pacman/filter-data-pacman-manual1.arff', 'w') as file:
-                for i in instance:
-                    file.write(i)
-                file.write("\n@data")
-                file.write("\n")
-
-        new_line = []
-        pacmanXPosition = gameState.getPacmanPosition()[0]
-        pacmanYPosition = gameState.getPacmanPosition()[1]
-        pacmanDirection = gameState.data.agentStates[0].getDirection()
-        new_info = [pacmanDirection, pacmanXPosition, pacmanYPosition]
-        ghostPositions = gameState.getGhostPositions()
-
-        takenAction = BustersAgent.getAction(self, gameState)
-
-        for x in ghostPositions:
-            for i in x:
-                new_info.append(i)  
-        
-        new_info.append(takenAction)
-        new_line.append(new_info)
-
-        with open('weka-pacman/filter-data-pacman-manual1.arff','a') as file:
-            np.savetxt(file, new_line, delimiter=',', fmt='%s')
-        
-        print("filter 1:", new_info)
-
-    def printFilterData2(self, gameState):
-        import numpy as np
-        relation = "\n@relation filter-data-pacman-manual2"
-        atribute1 = "\n@attribute LivingGhost1 {False, True}"
-        atribute2 = "\n@attribute LivingGhost2 {False, True}"
-        atribute3 = "\n@attribute LivingGhost3 {False, True}"
-        atribute4 = "\n@attribute LivingGhost4 {False, True}"
-        atribute5 = "\n@attribute ghost1Dist NUMERIC"
-        atribute6 = "\n@attribute ghost2Dist NUMERIC"
-        atribute7 = "\n@attribute ghost3Dist NUMERIC"
-        atribute8 = "\n@attribute ghost4Dist NUMERIC"
-        clase = "\n@attribute action {West, East, North, South}"
-        instance = [relation, atribute1, atribute2, atribute3, atribute4, atribute5, atribute6, atribute7, atribute8, clase]
-
-        if not os.path.isfile("weka-pacman/filter-data-pacman-manual2.arff"):
-            with open('weka-pacman/filter-data-pacman-manual2.arff', 'w') as file:
-                for i in instance:
-                    file.write(i)
-                file.write("\n@data")
-                file.write("\n")
-
-        new_line = []
-        livingGhosts = gameState.getLivingGhosts()[1:]
-        new_info = livingGhosts[:]
-        ghostDistances = gameState.data.ghostDistances[:] #Copy the list, there'll be changes, so change the assigment
-        
-        for i in range(len(ghostDistances)):
-            if ghostDistances[i] == None: ghostDistances[i] = 0
-
-        takenAction = BustersAgent.getAction(self, gameState)
-        
-        new_info = new_info+ghostDistances
-        new_info.append(takenAction)
-        new_line.append(new_info)
-
-        with open('weka-pacman/filter-data-pacman-manual2.arff','a') as file:
-            np.savetxt(file, new_line, delimiter=',', fmt='%s')
-        
-        print("filter 2: ", new_info)
