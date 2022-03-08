@@ -24,6 +24,9 @@ import busters
 import os
 
 prevPacmanPosition = (0,0)
+'''This score is a global variable that is changed in ChooseAction method so that it will save the next value of Score considering wether pac-man is
+eating a ghost'''
+nextScore = 0 
 
 class NullGraphics(object):
     "Placeholder for graphics"
@@ -107,6 +110,12 @@ class BustersAgent(object):
     def chooseAction(self, gameState):
         "By default, a BustersAgent just stops.  This should be overridden."
         return Directions.STOP
+    
+    def getNextScore(self, gameState):
+        '''calculates next Score by using gameState data. nextScore variable is Global'''
+        global nextScore
+
+        
 
     def printLineData(self, gameState):
         import numpy as np
@@ -265,68 +274,6 @@ class BustersKeyboardAgent(BustersAgent, KeyboardAgent):
     def chooseAction(self, gameState):
         return KeyboardAgent.getAction(self, gameState)
 
-    def printLineData(self, gameState):
-        import numpy as np
-        relation = "\n@relation all-data-pacman"
-        atribute1 = "\n@attribute pacmanXpos NUMERIC"
-        atribute2 = "\n@attribute pacmanYpos NUMERIC"
-        atribute3 = "\n@attribute pacmanDirec {West, East, North, South}"
-        #numberGhosts = "@attribute"
-        atribute4 = "\n@attribute LivingGhost1 {False, True}"
-        atribute5 = "\n@attribute LivingGhost2 {False, True}"
-        atribute6 = "\n@attribute LivingGhost3 {False, True}"
-        atribute7 = "\n@attribute LivingGhost4 {False, True}"
-        atribute9 = "\n@attribute ghost1XPos NUMERIC"
-        atribute10 = "\n@attribute ghost1YPos NUMERIC"
-        atribute11 = "\n@attribute ghost2XPos NUMERIC"
-        atribute12 = "\n@attribute ghost2YPos NUMERIC"
-        atribute13 = "\n@attribute ghost3XPos NUMERIC"
-        atribute14 = "\n@attribute ghost3YPos NUMERIC"
-        atribute15 = "\n@attribute ghost4XPos NUMERIC"
-        atribute16 = "\n@attribute ghost4YPos NUMERIC"
-        atribute17 = "\n@attribute ghost5XPos NUMERIC"
-        atribute18 = "\n@attribute ghost5YPos NUMERIC"
-        atribute19 = "\n@attribute ghost1Dist NUMERIC"
-        atribute20 = "\n@attribute ghost2Dist NUMERIC"
-        atribute21 = "\n@attribute ghost3Dist NUMERIC"
-        atribute22 = "\n@attribute ghost4Dist NUMERIC"
-        atribute23 = "\n@attribute ghost5Dist NUMERIC"
-        clase = "\n@attribute action {West, East, North, South}"
-        instance = [relation, atribute1, atribute2, atribute3, atribute4, atribute5, atribute6, atribute7, atribute9, atribute10, atribute11, atribute12, atribute13, atribute14, atribute15, atribute16, atribute17, atribute18, atribute19, atribute20, atribute21, atribute22, atribute23, clase, ""]
-
-        if not os.path.isfile("weka-pacman/all-data-pacman.arff"):
-            with open('weka-pacman/all-data-pacman.arff', 'w') as file:
-                for i in instance:
-                    file.write(i)
-                file.write("\n@data")
-                file.write("\n")
-
-        new_line = []
-        pacmanXPosition = gameState.getPacmanPosition()[0]
-        pacmanYPosition = gameState.getPacmanPosition()[1]
-        pacmanDirection = gameState.data.agentStates[0].getDirection()
-        livingGhosts = gameState.getLivingGhosts()[1:]
-        new_info = [pacmanXPosition, pacmanYPosition, pacmanDirection]+livingGhosts
-        ghostPositions = gameState.getGhostPositions()
-        ghostDistances = gameState.data.ghostDistances[:] #Copy the list, there'll be changes, so change the assigment
-        
-        for i in range(len(ghostDistances)):
-            if ghostDistances[i] == None: ghostDistances[i] = 0
-
-        takenAction = KeyboardAgent.getAction(self, gameState)
-
-        for x in ghostPositions:
-            for i in x:
-                new_info.append(i)  
-        
-        new_info = new_info+ghostDistances
-        new_info.append(takenAction)
-        new_line.append(new_info)
-
-        with open('weka-pacman/all-data-pacman.arff','a') as file:
-            np.savetxt(file, new_line, delimiter=',', fmt='%s')
-        
-        print(new_info)
 
 from distanceCalculator import Distancer
 from game import Actions
