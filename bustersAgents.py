@@ -174,12 +174,13 @@ class BustersAgent(object):
         
         currentState = currentState+ghostDistances
         currentState.append(takenAction)
-        new_line.append(previousState.append(currentScore))
+        new_line.append(previousState+[currentScore])
 
-        with open('weka-pacman/all-data-pacman.arff','a') as file:
-            np.savetxt(file, new_line, delimiter=',', fmt='%s')
+        '''with open('weka-pacman/all-data-pacman.arff','a') as file:
+            np.savetxt(file, new_line, delimiter=',', fmt='%s')'''
         
         print(new_line)
+        print(currentState+[currentScore])
 
         previousState = currentState[:]
         previousScore = currentScore

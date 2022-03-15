@@ -1,0 +1,52 @@
+
+@relation all-data-pacman
+@attribute pacmanDirec {West, East, North, South, Stop}
+@attribute pacmanXpos NUMERIC
+@attribute pacmanYpos NUMERIC
+@attribute LivingGhost1 {False, True}
+@attribute LivingGhost2 {False, True}
+@attribute LivingGhost3 {False, True}
+@attribute LivingGhost4 {False, True}
+@attribute ghost1XPos NUMERIC
+@attribute ghost1YPos NUMERIC
+@attribute ghost2XPos NUMERIC
+@attribute ghost2YPos NUMERIC
+@attribute ghost3XPos NUMERIC
+@attribute ghost3YPos NUMERIC
+@attribute ghost4XPos NUMERIC
+@attribute ghost4YPos NUMERIC
+@attribute ghost1Dist NUMERIC
+@attribute ghost2Dist NUMERIC
+@attribute ghost3Dist NUMERIC
+@attribute ghost4Dist NUMERIC
+@attribute action {West, East, North, South}
+@data
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
+None
