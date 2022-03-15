@@ -623,8 +623,8 @@ class Game(object):
             agent = self.agents[agentIndex]
             #if agentIndex == 0: agent.printInfo(self.state.deepCopy()) #Printing Info
             if agentIndex == 0:
-                '''agent.printLineData(self.state.deepCopy()) 
-                agent.printFilterData1(self.state.deepCopy())
+                agent.printLineData(self.state.deepCopy()) 
+                '''agent.printFilterData1(self.state.deepCopy())
                 agent.printFilterData2(self.state.deepCopy())'''
             move_time = 0
             skip_action = False
