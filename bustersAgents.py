@@ -144,7 +144,9 @@ class BustersAgent(object):
         atribute19 = "\n@attribute ghost3Dist NUMERIC"
         atribute20 = "\n@attribute ghost4Dist NUMERIC"
         clase = "\n@attribute action {West, East, North, South}"
-        instance = [relation, atribute1, atribute2, atribute3, atribute4, atribute5, atribute6, atribute7, atribute9, atribute10, atribute11, atribute12, atribute13, atribute14, atribute15, atribute16, atribute17, atribute18, atribute19, atribute20, clase]
+        atribute21 = "\n@attribute currentScore NUMERIC"
+        atribute22 = "\n@attribute futureScore NUMERIC"
+        instance = [relation, atribute1, atribute2, atribute3, atribute4, atribute5, atribute6, atribute7, atribute9, atribute10, atribute11, atribute12, atribute13, atribute14, atribute15, atribute16, atribute17, atribute18, atribute19, atribute20, clase, atribute21, atribute22]
 
         if not os.path.isfile("weka-pacman/all-data-pacman.arff"):
             with open('weka-pacman/all-data-pacman.arff', 'w') as file:
@@ -174,13 +176,12 @@ class BustersAgent(object):
         
         currentState = currentState+ghostDistances
         currentState.append(takenAction)
-        new_line.append(previousState+[currentScore])
+        new_line.append(previousState+[previousScore, currentScore])
 
-        '''with open('weka-pacman/all-data-pacman.arff','a') as file:
-            np.savetxt(file, new_line, delimiter=',', fmt='%s')'''
+        with open('weka-pacman/all-data-pacman.arff','a') as file:
+            np.savetxt(file, new_line, delimiter=',', fmt='%s')
         
         print(new_line)
-        print(currentState+[currentScore])
 
         previousState = currentState[:]
         previousScore = currentScore
