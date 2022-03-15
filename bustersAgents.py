@@ -24,6 +24,8 @@ import busters
 import os
 
 prevPacmanPosition = (0,0)
+previousState = []
+previousScore = 0
 '''This score is a global variable that is changed in ChooseAction method so that it will save the next value of Score considering wether pac-man is
 eating a ghost'''
 nextScore = 0 
@@ -115,10 +117,12 @@ class BustersAgent(object):
         '''calculates next Score by using gameState data. nextScore variable is Global'''
         global nextScore
 
-        
+    def getSuccesor(self, gameState):
+        print("Succesor: ")  #gameState.generateSuccesor(0, action)
 
     def printLineData(self, gameState):
         import numpy as np
+        global previousScore, previousState
         relation = "\n@relation all-data-pacman"
         atribute2 = "\n@attribute pacmanXpos NUMERIC"
         atribute3 = "\n@attribute pacmanYpos NUMERIC"
@@ -154,9 +158,10 @@ class BustersAgent(object):
         pacmanYPosition = gameState.getPacmanPosition()[1]
         pacmanDirection = gameState.data.agentStates[0].getDirection()
         livingGhosts = gameState.getLivingGhosts()[1:]
-        new_info = [pacmanDirection, pacmanXPosition, pacmanYPosition]+livingGhosts
+        currentState = [pacmanDirection, pacmanXPosition, pacmanYPosition]+livingGhosts
         ghostPositions = gameState.getGhostPositions()
         ghostDistances = gameState.data.ghostDistances[:] #Copy the list, there'll be changes, so change the assigment
+        currentScore = gameState.getScore()
         
         for i in range(len(ghostDistances)):
             if ghostDistances[i] == None: ghostDistances[i] = 0
@@ -165,16 +170,19 @@ class BustersAgent(object):
 
         for x in ghostPositions:
             for i in x:
-                new_info.append(i)  
+                currentState.append(i)  
         
-        new_info = new_info+ghostDistances
-        new_info.append(takenAction)
-        new_line.append(new_info)
+        currentState = currentState+ghostDistances
+        currentState.append(takenAction)
+        new_line.append(previousState.append(currentScore))
 
         with open('weka-pacman/all-data-pacman.arff','a') as file:
             np.savetxt(file, new_line, delimiter=',', fmt='%s')
         
-        print(new_info)
+        print(new_line)
+
+        previousState = currentState[:]
+        previousScore = currentScore
 
     def printFilterData1(self, gameState):
         import numpy as np
