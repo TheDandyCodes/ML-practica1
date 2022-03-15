@@ -623,7 +623,7 @@ class Game(object):
             agent = self.agents[agentIndex]
             #if agentIndex == 0: agent.printInfo(self.state.deepCopy()) #Printing Info
             if agentIndex == 0:
-                agent.printLineData(self.state.deepCopy()) 
+                agent.printLineData(self.state.deepCopy())
                 '''agent.printFilterData1(self.state.deepCopy())
                 agent.printFilterData2(self.state.deepCopy())'''
             move_time = 0
@@ -725,6 +725,9 @@ class Game(object):
 
             if _BOINC_ENABLED:
                 boinc.set_fraction_done(self.getProgress())
+
+        #agent.printLineData(self.state.deepCopy())
+
 
         # inform a learning agent of the game result
         for agentIndex, agent in enumerate(self.agents):

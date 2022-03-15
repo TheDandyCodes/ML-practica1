@@ -118,7 +118,7 @@ class BustersAgent(object):
         global nextScore
 
     def getSuccesor(self, gameState):
-        print("Succesor: ")  #gameState.generateSuccesor(0, action)
+        print("Succesor: ")  #gameState.generateSuccesor(0, action --> move = DIRECTION.West?)
 
     def printLineData(self, gameState):
         import numpy as np
@@ -180,11 +180,11 @@ class BustersAgent(object):
 
         with open('weka-pacman/all-data-pacman.arff','a') as file:
             np.savetxt(file, new_line, delimiter=',', fmt='%s')
-        
-        print(new_line)
 
         previousState = currentState[:]
         previousScore = currentScore
+            
+        print(new_line)
 
     def printFilterData1(self, gameState):
         import numpy as np
