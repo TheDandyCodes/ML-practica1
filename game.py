@@ -622,10 +622,7 @@ class Game(object):
             # Fetch the next agent
             agent = self.agents[agentIndex]
             #if agentIndex == 0: agent.printInfo(self.state.deepCopy()) #Printing Info
-            if agentIndex == 0:
-                agent.printLineData(self.state.deepCopy())
-                '''agent.printFilterData1(self.state.deepCopy())
-                agent.printFilterData2(self.state.deepCopy())'''
+            
             move_time = 0
             skip_action = False
             # Generate an observation of the state
@@ -696,6 +693,12 @@ class Game(object):
                     return
             else:
                 action = agent.getAction(observation)
+                if agentIndex == 0:
+                    currentState = self.state.deepCopy()
+                    nextState = self.state.generateSuccessor( agentIndex, action ).deepCopy()
+                    agent.printLineData(currentState,nextState)
+                    '''agent.printFilterData1(self.state.deepCopy())
+                    agent.printFilterData2(self.state.deepCopy())'''
             self.unmute()
 
             # Execute the action #HERE

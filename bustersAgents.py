@@ -22,6 +22,7 @@ from keyboardAgents import KeyboardAgent
 import inference
 import busters
 import os
+from game import Configuration
 
 prevPacmanPosition = (0,0)
 previousState = []
@@ -120,7 +121,7 @@ class BustersAgent(object):
     def getSuccesor(self, gameState):
         print("Succesor: ")  #gameState.generateSuccesor(0, action --> move = DIRECTION.West?)
 
-    def printLineData(self, gameState):
+    def printLineData(self, gameState, nextState):
         import numpy as np
         global previousScore, previousState
         relation = "\n@relation all-data-pacman"
@@ -185,6 +186,7 @@ class BustersAgent(object):
         previousScore = currentScore
             
         print(new_line)
+        print("Next Score: ", nextState.getScore())
 
     def printFilterData1(self, gameState):
         import numpy as np
