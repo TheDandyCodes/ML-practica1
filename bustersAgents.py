@@ -25,8 +25,6 @@ import os
 from game import Configuration
 
 prevPacmanPosition = (0,0)
-previousState = []
-previousScore = 0
 '''This score is a global variable that is changed in ChooseAction method so that it will save the next value of Score considering wether pac-man is
 eating a ghost'''
 nextScore = 0 
@@ -123,31 +121,32 @@ class BustersAgent(object):
 
     def printLineData(self, gameState, nextState):
         import numpy as np
-        global previousScore, previousState
         relation = "\n@relation all-data-pacman"
+        atribute1 = "\n@attribute pacmanDirec {West, East, North, South, Stop}"
         atribute2 = "\n@attribute pacmanXpos NUMERIC"
         atribute3 = "\n@attribute pacmanYpos NUMERIC"
-        atribute1 = "\n@attribute pacmanDirec {West, East, North, South, Stop}"
         atribute4 = "\n@attribute LivingGhost1 {False, True}"
         atribute5 = "\n@attribute LivingGhost2 {False, True}"
         atribute6 = "\n@attribute LivingGhost3 {False, True}"
         atribute7 = "\n@attribute LivingGhost4 {False, True}"
-        atribute9 = "\n@attribute ghost1XPos NUMERIC"
-        atribute10 = "\n@attribute ghost1YPos NUMERIC"
-        atribute11 = "\n@attribute ghost2XPos NUMERIC"
-        atribute12 = "\n@attribute ghost2YPos NUMERIC"
-        atribute13 = "\n@attribute ghost3XPos NUMERIC"
-        atribute14 = "\n@attribute ghost3YPos NUMERIC"
-        atribute15 = "\n@attribute ghost4XPos NUMERIC"
-        atribute16 = "\n@attribute ghost4YPos NUMERIC"
-        atribute17 = "\n@attribute ghost1Dist NUMERIC"
-        atribute18 = "\n@attribute ghost2Dist NUMERIC"
-        atribute19 = "\n@attribute ghost3Dist NUMERIC"
-        atribute20 = "\n@attribute ghost4Dist NUMERIC"
-        clase = "\n@attribute action {West, East, North, South}"
-        atribute21 = "\n@attribute currentScore NUMERIC"
-        atribute22 = "\n@attribute futureScore NUMERIC"
-        instance = [relation, atribute1, atribute2, atribute3, atribute4, atribute5, atribute6, atribute7, atribute9, atribute10, atribute11, atribute12, atribute13, atribute14, atribute15, atribute16, atribute17, atribute18, atribute19, atribute20, clase, atribute21, atribute22]
+        atribute8 = "\n@attribute ghost1XPos NUMERIC"
+        atribute9 = "\n@attribute ghost1YPos NUMERIC"
+        atribute10 = "\n@attribute ghost2XPos NUMERIC"
+        atribute11 = "\n@attribute ghost2YPos NUMERIC"
+        atribute12 = "\n@attribute ghost3XPos NUMERIC"
+        atribute13 = "\n@attribute ghost3YPos NUMERIC"
+        atribute14 = "\n@attribute ghost4XPos NUMERIC"
+        atribute15 = "\n@attribute ghost4YPos NUMERIC"
+        atribute16 = "\n@attribute ghost1Dist NUMERIC"
+        atribute17 = "\n@attribute ghost2Dist NUMERIC"
+        atribute18 = "\n@attribute ghost3Dist NUMERIC"
+        atribute19 = "\n@attribute ghost4Dist NUMERIC"
+        atribute20 = "\n@attribute currentScore NUMERIC"
+        atribute21 = "\n@attribute pacmanNextXPosition NUMERIC"
+        atribute22 = "\n@attribute pacmanNextYPosition NUMERIC"
+        atribute23 = "\n@attribute nextScore NUMERIC"
+        clase = "\n@attribute action {West, East, North, South, Stop}"
+        instance = [relation, atribute1, atribute2, atribute3, atribute4, atribute5, atribute6, atribute7, atribute8, atribute9, atribute10, atribute11, atribute12, atribute13, atribute14, atribute15, atribute16, atribute17, atribute18, atribute19, atribute20, atribute21, atribute22, atribute23, clase]
 
         if not os.path.isfile("weka-pacman/all-data-pacman.arff"):
             with open('weka-pacman/all-data-pacman.arff', 'w') as file:
@@ -157,11 +156,13 @@ class BustersAgent(object):
                 file.write("\n")
 
         new_line = []
+
+        #Current State Data
         pacmanXPosition = gameState.getPacmanPosition()[0]
         pacmanYPosition = gameState.getPacmanPosition()[1]
         pacmanDirection = gameState.data.agentStates[0].getDirection()
         livingGhosts = gameState.getLivingGhosts()[1:]
-        currentState = [pacmanDirection, pacmanXPosition, pacmanYPosition]+livingGhosts
+        instance_line = [pacmanDirection, pacmanXPosition, pacmanYPosition]+livingGhosts
         ghostPositions = gameState.getGhostPositions()
         ghostDistances = gameState.data.ghostDistances[:] #Copy the list, there'll be changes, so change the assigment
         currentScore = gameState.getScore()
@@ -169,24 +170,33 @@ class BustersAgent(object):
         for i in range(len(ghostDistances)):
             if ghostDistances[i] == None: ghostDistances[i] = 0
 
-        takenAction = BustersAgent.getAction(self, gameState)
-
         for x in ghostPositions:
             for i in x:
-                currentState.append(i)  
-        
-        currentState = currentState+ghostDistances
-        currentState.append(takenAction)
-        new_line.append(previousState+[previousScore, currentScore])
+                instance_line.append(i)
+        instance_line.extend(ghostDistances)
+        instance_line.append(currentScore)
+        #Taken Action (Class)
+        takenAction = BustersAgent.getAction(self, gameState)
+
+        #Next State Data
+        pacmanNextXPosition = pacmanXPosition
+        pacmanNextYPosition = pacmanYPosition
+        if takenAction == 'North': pacmanNextYPosition = pacmanYPosition+1
+        elif takenAction == 'South': pacmanNextYPosition = pacmanYPosition-1
+        elif takenAction == 'Right': pacmanNextXPosition = pacmanXPosition+1
+        elif takenAction == 'Left': pacmanNextXPosition = pacmanXPosition-1
+        nextScore = nextState.getScore()
+        nextDataLine=[pacmanNextXPosition, pacmanNextYPosition, nextScore]
+
+        instance_line.extend(nextDataLine)
+
+        instance_line.append(takenAction)
+        new_line.append(instance_line)
 
         with open('weka-pacman/all-data-pacman.arff','a') as file:
             np.savetxt(file, new_line, delimiter=',', fmt='%s')
-
-        previousState = currentState[:]
-        previousScore = currentScore
             
         print(new_line)
-        print("Next Score: ", nextState.getScore())
 
     def printFilterData1(self, gameState):
         import numpy as np
