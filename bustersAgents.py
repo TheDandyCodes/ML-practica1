@@ -148,8 +148,8 @@ class BustersAgent(object):
         clase = "\n@attribute action {West, East, North, South, Stop}"
         instance = [relation, atribute1, atribute2, atribute3, atribute4, atribute5, atribute6, atribute7, atribute8, atribute9, atribute10, atribute11, atribute12, atribute13, atribute14, atribute15, atribute16, atribute17, atribute18, atribute19, atribute20, atribute21, atribute22, atribute23, clase]
 
-        if not os.path.isfile("weka-pacman/all-data-pacman.arff"):
-            with open('weka-pacman/all-data-pacman.arff', 'w') as file:
+        if not os.path.isfile("weka-pacman/test_othermaps_tutorial1.arff"):
+            with open('weka-pacman/test_othermaps_tutorial1.arff', 'w') as file:
                 for i in instance:
                     file.write(i)
                 file.write("\n@data")
@@ -193,7 +193,7 @@ class BustersAgent(object):
         instance_line.append(takenAction)
         new_line.append(instance_line)
 
-        with open('weka-pacman/all-data-pacman.arff','a') as file:
+        with open('weka-pacman/test_othermaps_tutorial1.arff','a') as file:
             np.savetxt(file, new_line, delimiter=',', fmt='%s')
             
         print(new_line)
