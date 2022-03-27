@@ -214,7 +214,7 @@ class BustersAgent(object):
         atribute11 = "\n@attribute ghost4YPos NUMERIC"
         clase = "\n@attribute action {West, East, North, South}"
         instance = [relation, atribute1, atribute2, atribute3, atribute4, atribute5, atribute6, atribute7, atribute8, atribute9, atribute10, atribute11, clase]
-
+        #
         if not os.path.isfile("weka-pacman/filter-data-pacman-manual1.arff"):
             with open('weka-pacman/filter-data-pacman-manual1.arff', 'w') as file:
                 for i in instance:
