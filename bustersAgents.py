@@ -23,7 +23,7 @@ import inference
 import busters
 import os
 from game import Configuration
-from wekaI import Weka
+#from wekaI import Weka
 
 prevPacmanPosition = (0,0)
 '''This score is a global variable that is changed in ChooseAction method so that it will save the next value of Score considering wether pac-man is
@@ -81,8 +81,8 @@ class BustersAgent(object):
         self.inferenceModules = [inferenceType(a) for a in ghostAgents]
         self.observeEnable = observeEnable
         self.elapseTimeEnable = elapseTimeEnable
-        self.weka = Weka()
-        self.weka.start_jvm()
+        '''self.weka = Weka()
+        self.weka.start_jvm()'''
 
     def registerInitialState(self, gameState):
         "Initializes beliefs and inference modules"
@@ -446,7 +446,6 @@ class BasicAgentAA(BustersAgent): #############################INTERESA#########
         
     def chooseAction(self, gameState): 
         global prevPacmanPosition
-
         self.countActions = self.countActions + 1
         move = Directions.STOP
         legal = gameState.getLegalActions(0) ##Legal position from the pacman
