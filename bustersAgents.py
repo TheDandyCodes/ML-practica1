@@ -505,6 +505,5 @@ class BasicAgentAA(BustersAgent): #############################INTERESA#########
         if   ( movement == 3 ) and Directions.SOUTH in legal: move = Directions.SOUTH
 
         prevPacmanPosition = pacmanPosition
-        
 
         return move
