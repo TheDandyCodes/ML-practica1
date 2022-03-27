@@ -23,11 +23,13 @@ import inference
 import busters
 import os
 from game import Configuration
+#from wekaI import Weka
 
 prevPacmanPosition = (0,0)
 '''This score is a global variable that is changed in ChooseAction method so that it will save the next value of Score considering wether pac-man is
 eating a ghost'''
 nextScore = 0 
+instance_line = []
 
 class NullGraphics(object):
     "Placeholder for graphics"
@@ -80,6 +82,8 @@ class BustersAgent(object):
         self.inferenceModules = [inferenceType(a) for a in ghostAgents]
         self.observeEnable = observeEnable
         self.elapseTimeEnable = elapseTimeEnable
+        '''self.weka = Weka()
+        self.weka.start_jvm()'''
 
     def registerInitialState(self, gameState):
         "Initializes beliefs and inference modules"
@@ -121,6 +125,7 @@ class BustersAgent(object):
 
     def printLineData(self, gameState, nextState):
         import numpy as np
+        global instance_line
         relation = "\n@relation all-data-pacman"
         atribute1 = "\n@attribute pacmanDirec {West, East, North, South, Stop}"
         atribute2 = "\n@attribute pacmanXpos NUMERIC"
@@ -505,5 +510,7 @@ class BasicAgentAA(BustersAgent): #############################INTERESA#########
         if   ( movement == 3 ) and Directions.SOUTH in legal: move = Directions.SOUTH
 
         prevPacmanPosition = pacmanPosition
-
+        '''x = instance_line[:]
+        a = self.weka.predict("./weka-pacman/Clasificacion/j48.model", x, "./weka-pacman/training_keyboard.arff")
+        print(a)'''
         return move
