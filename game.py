@@ -696,8 +696,9 @@ class Game(object):
                 if agentIndex == 0:
                     currentState = self.state.deepCopy()
                     nextState = self.state.generateSuccessor( agentIndex, action ).deepCopy()
-                    agent.printLineData(currentState,nextState)
-                    
+                    #agent.printLineData(currentState,nextState)
+                    '''agent.printFilterData1(self.state.deepCopy())
+                    agent.printFilterData2(self.state.deepCopy())'''
             self.unmute()
 
             # Execute the action #HERE
