@@ -220,11 +220,7 @@ class BustersAgent(object):
                 instance_line.append(i)
         instance_line.extend(ghostDistances)
 
-        #Taken Action (Class)
-        #takenAction = BustersAgent.chooseAction(self, gameState)
-        #instance_line.append(takenAction)
-
-        print(instance_line)
+        #print(instance_line)
 
         return instance_line
 
@@ -495,13 +491,14 @@ class BasicAgentAA(BustersAgent): #############################INTERESA#########
         #ML model based on Random Forest
         legal = gameState.getLegalActions(0)
         x = self.getInstanceToPredict(gameState)
-        a = self.weka.predict("/home/ricardo/Escritorio/UNI/5º/ML/practicas/ML-practica1/weka-pacman/classification/final_model/RandomForest.model", x, "/home/ricardo/Escritorio/UNI/5º/ML/practicas/ML-practica1/weka-pacman/classification/final_model/training_keyboard_nonorm_nobalanced_final_nostop.arff")
-        print(a)
+        p_keyboard = self.weka.predict("/home/ricardo/Escritorio/UNI/5º/ML/practicas/ML-practica1/weka-pacman/classification/final_model/keyboard/keyboard_RandomForest.model", x, "/home/ricardo/Escritorio/UNI/5º/ML/practicas/ML-practica1/weka-pacman/classification/final_model/keyboard/training_keyboard_nonorm_nobalanced_final_nostop.arff")
+        #p_tutorial1 = self.weka.predict("/home/ricardo/Escritorio/UNI/5º/ML/practicas/ML-practica1/weka-pacman/classification/final_model/tutorial1/tutorial1_RandomForest.model", x, "/home/ricardo/Escritorio/UNI/5º/ML/practicas/ML-practica1/weka-pacman/classification/final_model/tutorial1/training_tutorial1_nonorm_nobalanced_var6_nostop.arff")
+        print(p_keyboard)
         
         prediction = Directions.STOP #to avoid 'prediction' referenced before assigment
-        if   ( a == 'West') and Directions.WEST in legal:  prediction = Directions.WEST
-        elif   ( a == 'East' ) and Directions.EAST in legal: prediction = Directions.EAST
-        elif   ( a == 'North' ) and Directions.NORTH in legal:   prediction = Directions.NORTH
-        elif   ( a == 'South' ) and Directions.SOUTH in legal: prediction = Directions.SOUTH
+        if   ( p_keyboard == 'West') and Directions.WEST in legal:  prediction = Directions.WEST
+        elif   ( p_keyboard == 'East' ) and Directions.EAST in legal: prediction = Directions.EAST
+        elif   ( p_keyboard == 'North' ) and Directions.NORTH in legal:   prediction = Directions.NORTH
+        elif   ( p_keyboard == 'South' ) and Directions.SOUTH in legal: prediction = Directions.SOUTH
         
         return prediction
