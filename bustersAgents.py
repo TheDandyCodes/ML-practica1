@@ -23,7 +23,7 @@ import inference
 import busters
 import os
 from game import Configuration
-#from wekaI import Weka
+from wekaI import Weka
 
 prevPacmanPosition = (0,0)
 '''This score is a global variable that is changed in ChooseAction method so that it will save the next value of Score considering wether pac-man is
@@ -82,8 +82,8 @@ class BustersAgent(object):
         self.inferenceModules = [inferenceType(a) for a in ghostAgents]
         self.observeEnable = observeEnable
         self.elapseTimeEnable = elapseTimeEnable
-        '''self.weka = Weka()
-        self.weka.start_jvm()'''
+        self.weka = Weka()
+        self.weka.start_jvm()
 
     def registerInitialState(self, gameState):
         "Initializes beliefs and inference modules"
@@ -203,50 +203,31 @@ class BustersAgent(object):
             
         print(new_line)
 
-    def printFilterData1(self, gameState):
-        import numpy as np
-        relation = "\n@relation filter-data-pacman-manual1"
-        atribute2 = "\n@attribute pacmanXpos NUMERIC"
-        atribute3 = "\n@attribute pacmanYpos NUMERIC"
-        atribute1 = "\n@attribute pacmanDirec {West, East, North, South, Stop}"
-        atribute4 = "\n@attribute ghost1XPos NUMERIC"
-        atribute5 = "\n@attribute ghost1YPos NUMERIC"
-        atribute6 = "\n@attribute ghost2XPos NUMERIC"
-        atribute7 = "\n@attribute ghost2YPos NUMERIC"
-        atribute8 = "\n@attribute ghost3XPos NUMERIC"
-        atribute9 = "\n@attribute ghost3YPos NUMERIC"
-        atribute10 = "\n@attribute ghost4XPos NUMERIC"
-        atribute11 = "\n@attribute ghost4YPos NUMERIC"
-        clase = "\n@attribute action {West, East, North, South}"
-        instance = [relation, atribute1, atribute2, atribute3, atribute4, atribute5, atribute6, atribute7, atribute8, atribute9, atribute10, atribute11, clase]
-        #
-        if not os.path.isfile("weka-pacman/filter-data-pacman-manual1.arff"):
-            with open('weka-pacman/filter-data-pacman-manual1.arff', 'w') as file:
-                for i in instance:
-                    file.write(i)
-                file.write("\n@data")
-                file.write("\n")
-
-        new_line = []
+    def getInstanceToPredict(self, gameState):
+        #Current State Data
         pacmanXPosition = gameState.getPacmanPosition()[0]
         pacmanYPosition = gameState.getPacmanPosition()[1]
         pacmanDirection = gameState.data.agentStates[0].getDirection()
-        new_info = [pacmanDirection, pacmanXPosition, pacmanYPosition]
+        instance_line = [pacmanDirection, pacmanXPosition, pacmanYPosition]
         ghostPositions = gameState.getGhostPositions()
-
-        takenAction = BustersAgent.getAction(self, gameState)
+        ghostDistances = gameState.data.ghostDistances[:] #Copy the list, there'll be changes, so change the assigment
+        
+        for i in range(len(ghostDistances)):
+            if ghostDistances[i] == None: ghostDistances[i] = 0
 
         for x in ghostPositions:
             for i in x:
-                new_info.append(i)  
-        
-        new_info.append(takenAction)
-        new_line.append(new_info)
+                instance_line.append(i)
+        instance_line.extend(ghostDistances)
 
-        with open('weka-pacman/filter-data-pacman-manual1.arff','a') as file:
-            np.savetxt(file, new_line, delimiter=',', fmt='%s')
-        
-        print("filter 1:", new_info)
+        #Taken Action (Class)
+        #takenAction = BustersAgent.chooseAction(self, gameState)
+        #instance_line.append(takenAction)
+
+        print(instance_line)
+
+        return instance_line
+
 
     def printFilterData2(self, gameState):
         import numpy as np
@@ -448,7 +429,8 @@ class BasicAgentAA(BustersAgent): #############################INTERESA#########
         
         
     def chooseAction(self, gameState): 
-        global prevPacmanPosition
+        #Tutorial 01 - IA
+        '''global prevPacmanPosition
 
         self.countActions = self.countActions + 1
         move = Directions.STOP
@@ -502,15 +484,24 @@ class BasicAgentAA(BustersAgent): #############################INTERESA#########
         elif wallsAroundPacman.count(True) == 1:
             wall = wallsAroundPacman.index(True)
             if pacmanCurrentDirection is not wall: movement = pacmanCurrentDirection
-                
+        
     
         if   ( movement == 0 ) and Directions.WEST in legal:  move = Directions.WEST
         if   ( movement == 1 ) and Directions.EAST in legal: move = Directions.EAST
         if   ( movement == 2 ) and Directions.NORTH in legal:   move = Directions.NORTH
         if   ( movement == 3 ) and Directions.SOUTH in legal: move = Directions.SOUTH
+        prevPacmanPosition = pacmanPosition'''
 
-        prevPacmanPosition = pacmanPosition
-        '''x = instance_line[:]
-        a = self.weka.predict("./weka-pacman/Clasificacion/j48.model", x, "./weka-pacman/training_keyboard.arff")
-        print(a)'''
-        return move
+        #ML model based on Random Forest
+        legal = gameState.getLegalActions(0)
+        x = self.getInstanceToPredict(gameState)
+        a = self.weka.predict("/home/ricardo/Escritorio/UNI/5º/ML/practicas/ML-practica1/weka-pacman/classification/final_model/RandomForest.model", x, "/home/ricardo/Escritorio/UNI/5º/ML/practicas/ML-practica1/weka-pacman/classification/final_model/training_keyboard_nonorm_nobalanced_final_nostop.arff")
+        print(a)
+        
+        prediction = Directions.STOP #to avoid 'prediction' referenced before assigment
+        if   ( a == 'West') and Directions.WEST in legal:  prediction = Directions.WEST
+        elif   ( a == 'East' ) and Directions.EAST in legal: prediction = Directions.EAST
+        elif   ( a == 'North' ) and Directions.NORTH in legal:   prediction = Directions.NORTH
+        elif   ( a == 'South' ) and Directions.SOUTH in legal: prediction = Directions.SOUTH
+        
+        return prediction
